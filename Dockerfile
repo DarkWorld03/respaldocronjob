@@ -1,17 +1,26 @@
-# Usa una imagen base con Node.js y Chromium
-FROM ghcr.io/puppeteer/puppeteer:latest
+# Usamos una imagen ligera de Node.js
+FROM node:18-slim
 
-# Establece el directorio de trabajo dentro del contenedor
+# Instalamos Chromium para Puppeteer
+RUN apt-get update && \
+    apt-get install -y chromium && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Establecemos el directorio de trabajo
 WORKDIR /app
 
-# Copia todos los archivos al contenedor
+# Copiamos todos los archivos del proyecto al contenedor
 COPY . .
 
-# Instala las dependencias
+# Instalamos dependencias
 RUN npm install
 
-# Expone el puerto 3000
-EXPOSE 3000
+# Configuramos variable para que Puppeteer use Chromium instalado
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Comando para iniciar tu app (ajusta si usas otro archivo de entrada)
-CMD ["npm", "start"]
+# Ambiente de producción (opcional)
+ENV NODE_ENV=production
+
+# Comando para iniciar la app
+CMD ["node", "server.js"]
