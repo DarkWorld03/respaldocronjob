@@ -3,12 +3,12 @@ const puppeteer = require("puppeteer");
 async function scrapeAllGuilds() {
     try {
         console.log("🔍 Iniciando scrapeAllGuilds...");
-
         const browser = await puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            executablePath: '/usr/bin/chromium-browser',
+            // NO pongas executablePath aquí
           });
+          
           
 
         const page = await browser.newPage();
