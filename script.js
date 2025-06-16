@@ -32,7 +32,7 @@ window.mainGuildName = "";
 
 // Cargar datos de todas las guilds y tabla global
 function cargarDatosGuilds() {
-    fetch("https://axie-guild-data.onrender.com/guilds")
+    fetch("https://axie-guild-data-1.onrender.com/guilds")
         .then(response => response.json())
         .then(data => {
             const guildsTable = document.getElementById("guildsTable");
@@ -83,7 +83,7 @@ function cargarDatosGuilds() {
 
 // Cargar datos de jugadores y encabezado de la guild
 function cargarDatosJugadores() {
-    fetch("https://axie-guild-data.onrender.com/guild-data")
+    fetch("https://axie-guild-data-1.onrender.com/guild-data")
         .then(response => response.json())
         .then(data => {
             document.getElementById("guildName").innerText = data.guildName || "Nombre Desconocido";
@@ -147,7 +147,7 @@ async function cargarDatosHistoricos() {
     tbody.innerHTML = "";
 
     try {
-        const res = await fetch("https://axie-guild-data.onrender.com/guild-data-historico");
+        const res = await fetch("https://axie-guild-data-1.onrender.com/guild-data-historico");
         if (!res.ok) throw new Error("Error al obtener datos históricos");
         const data = await res.json();
 
