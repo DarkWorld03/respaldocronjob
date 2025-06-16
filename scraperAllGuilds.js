@@ -5,9 +5,9 @@ async function scrapeAllGuilds() {
         console.log("🔍 Iniciando scrapeAllGuilds...");
         const browser = await puppeteer.launch({
             headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            // NO pongas executablePath aquí
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
           });
+          
           
           
 

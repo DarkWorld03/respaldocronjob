@@ -4,9 +4,9 @@ async function scrapeGuildData() {
     try {
         const browser = await puppeteer.launch({
             headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            // NO pongas executablePath aquí
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
           });
+          
           
 
         const page = await browser.newPage();
