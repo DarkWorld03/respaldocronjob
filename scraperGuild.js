@@ -2,13 +2,10 @@ const puppeteer = require("puppeteer");
 
 async function scrapeGuildData() {
     try {
-        const isRender = process.env.RENDER ? true : false;
-
-const browser = await puppeteer.launch({
-  headless: true,
-  executablePath: isRender ? '/usr/bin/google-chrome-stable' : undefined,
-  args: isRender ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
-});
+        const browser = await puppeteer.launch({
+            headless: true,
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
 
         const page = await browser.newPage();
 
@@ -62,4 +59,5 @@ const browser = await puppeteer.launch({
 }
 
 module.exports = scrapeGuildData;
+
 
