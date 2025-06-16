@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const scrapeGuildData = require("./scraperGuild");
 const scrapeAllGuilds = require("./scraperAllGuilds");
+const guardarDatosDiarios = require("./guardarDatosDiarios");
 
 const app = express();
 app.use(cors());
@@ -27,9 +28,7 @@ app.get("/guild-data", async (req, res) => {
 app.get("/guilds", async (req, res) => {
     try {
         console.log("🔍 Procesando solicitud a /guilds...");
-        
         const data = await scrapeAllGuilds();
-        console.log("✅ Datos obtenidos por scrapeAllGuilds:", JSON.stringify(data, null, 2));
 
         if (!data || data.length === 0) {
             console.error("❌ No se encontraron guilds en scrapeAllGuilds.");
@@ -44,7 +43,18 @@ app.get("/guilds", async (req, res) => {
     }
 });
 
-// Función que procesa los datos históricos guardados en /data
+// Endpoint para ejecutar manualmente el guardado diario
+app.get("/ejecutar-scraper", async (req, res) => {
+    try {
+        await guardarDatosDiarios();
+        res.send("✅ Scraper ejecutado correctamente.");
+    } catch (error) {
+        console.error("❌ Error ejecutando el scraper diario:", error);
+        res.status(500).send("❌ Error ejecutando el scraper.");
+    }
+});
+
+// Función para procesar el historial de puntos por día
 function procesarGuildData() {
     const dataFolder = path.join(__dirname, "data");
 
@@ -53,7 +63,7 @@ function procesarGuildData() {
     }
 
     const archivos = fs.readdirSync(dataFolder)
-        .filter(f => f.endsWith(".json") && f !== "2025-06-14.json") // ← IGNORAR ARCHIVO VIEJO
+        .filter(f => f.endsWith(".json") && f !== "2025-06-14.json") // Ignorar base vieja
         .sort();
 
     if (archivos.length === 0) return { dias: [], jugadores: [] };
@@ -79,7 +89,7 @@ function procesarGuildData() {
         });
     });
 
-    // Rellenar días faltantes con el último valor conocido
+    // Rellenar vacíos con el último valor conocido
     for (const jugador of Object.values(historico)) {
         for (let i = 0; i < dias.length; i++) {
             if (jugador.puntos[i] === undefined) {
@@ -108,7 +118,7 @@ function procesarGuildData() {
     };
 }
 
-// Nuevo endpoint: datos históricos diarios
+// Endpoint para consultar los datos históricos
 app.get("/guild-data-historico", (req, res) => {
     try {
         const data = procesarGuildData();
@@ -119,6 +129,8 @@ app.get("/guild-data-historico", (req, res) => {
     }
 });
 
-// Puerto que usa Render o fallback a 3000 local
+// Puerto que usará Render o localmente 3000
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Servidor corriendo en http://localhost:${PORT}`));
+app.listen(PORT, () => {
+    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+});

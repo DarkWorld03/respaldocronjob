@@ -90,4 +90,4 @@ function guardarArchivo(ruta, fecha, jugadores) {
   console.log(`✅ Datos guardados correctamente: ${ruta}`);
 }
 
-guardarDatosDiarios();
+module.exports = guardarDatosDiarios;
