@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nik3LodeuM | NkL Guild</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav>
+    <button onclick="mostrarSeccion('nikeladim')" class="activo">Nik3LodeuM</button>
+    <button onclick="mostrarSeccion('guilds')">Guilds</button>
+    <button onclick="mostrarSeccion('puntos')">Guild data</button>
+  </nav>
+
+  <section id="nikeladim" class="seccion activa">
+    <div class="guild-header">
+      <div class="guild-left">
+        <img id="guildLogo" src="logo.png" alt="Guild Logo" />
+      </div>
+      <div class="guild-center">
+        <h2>Guild: <span id="guildName">Cargando...</span></h2>
+      </div>
+      <div class="guild-right">
+        <h3 id="guildRank">Top #?</h3>
+      </div>
+    </div>
+
+    <h2>Ranking de Jugadores</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Name</th>
+          <th>Points</th>
+          <th>Difference Points</th>
+        </tr>
+      </thead>
+      <tbody id="playersTable"></tbody>
+    </table>
+  </section>
+
+  <section id="guilds" class="seccion">
+    <h2>Ranking de Guilds</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Guild Name</th>
+          <th>Points</th>
+          <th>Difference Points</th>
+        </tr>
+      </thead>
+      <tbody id="guildsTable"></tbody>
+    </table>
+  </section>
+
+  <section id="puntos" class="seccion" style="margin: 20px auto; width: 98%; max-width: 100%;">
+    <h1 style="margin-bottom: 10px;">Estadísticas de cada jugador</h1>
+  
+    <div class="botones-exportar" style="margin-bottom: 10px;">
+      <button onclick="exportarExcel()">📥 Exportar Excel</button>
+      <button onclick="exportarPDF()">📄 Exportar PDF</button>
+    </div>
+  
+    <div class="tabla-scroll" id="tablaScroll" style="overflow-x: auto; overflow-y: auto;">
+      <table id="guildDataTable">
+        <thead id="historicoThead"></thead>
+        <tbody id="historicoTbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+  <!-- SheetJS para Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- jsPDF + autoTable para PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+

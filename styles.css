@@ -1,0 +1,382 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background: url('logopro.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    margin: 0;
+    padding: 0;
+}
+
+/* Wrapper para scroll sincronizado (Guild Data) */
+.tabla-scroll {
+    position: relative;
+    width: 100%;
+    max-height: 673px;
+    overflow-x: auto;
+    overflow-y: auto;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.4);
+    margin: 0 auto;
+}
+
+/* Eliminamos scroll-horizontal duplicado innecesario */
+.scroll-horizontal {
+    display: none;
+}
+
+/* Estilo general de la tabla */
+#guildDataTable {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+    font-size: 14px;
+}
+
+/* Encabezados generales */
+#guildDataTable th {
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    vertical-align: bottom;
+    font-weight: bold;
+}
+
+/* Celdas */
+#guildDataTable td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: center;
+}
+
+/* Encabezado de "Nombre" */
+#guildDataTable th:nth-child(1),
+#guildDataTable td:nth-child(1) {
+    width: 250px;
+    white-space: nowrap;
+    text-align: left;
+}
+
+/* Encabezados de Total y Promedio */
+#guildDataTable th:nth-child(2),
+#guildDataTable td:nth-child(2),
+#guildDataTable th:nth-child(3),
+#guildDataTable td:nth-child(3) {
+    width: 80px;
+}
+
+/* Encabezados de fechas rotados */
+#guildDataTable th.fecha {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    padding: 5px;
+    font-size: 12px;
+    min-width: 30px;
+    max-width: 30px;
+}
+
+/* Celdas de fechas */
+#guildDataTable td.fecha {
+    min-width: 30px;
+    max-width: 30px;
+    font-size: 13px;
+    padding: 4px;
+}
+
+/* Scroll horizontal */
+.tabla-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+/* ❌ Eliminar efecto hover */
+#guildDataTable tbody tr:hover {
+    background: inherit;
+}
+
+/* ❌ Eliminar alternancia de filas */
+#guildDataTable tbody tr:nth-child(even) {
+    background: inherit;
+}
+
+/* ✅ Estilo uniforme para todas las filas */
+#guildDataTable tbody tr {
+    background: linear-gradient(135deg, #414b67 0%, #2e3854 100%);
+}
+
+/* El resto del CSS se mantiene igual... */
+.seccion {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    display: none;
+    margin: 20px auto;
+    width: 95%;
+    max-width: 1200px;
+}
+
+.seccion.activa {
+    display: block;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+button {
+    background-color: #414b67;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.2s;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+    background-color: #2e3854;
+    transform: scale(1.05);
+}
+
+button.activo {
+    background-color: #4ab3ff;
+    color: white;
+    font-weight: bold;
+}
+
+table {
+    margin: 0;
+    border-collapse: collapse;
+    background: linear-gradient(135deg, #414b67 0%, #2e3854 100%);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+}
+
+thead {
+    background: #ffffff;
+    color: black;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+tbody tr:nth-child(1) td:first-child {
+    color: #ffcc00;
+    font-size: 20px;
+}
+tbody tr:nth-child(2) td:first-child {
+    color: #c0c0c0;
+    font-size: 19px;
+}
+tbody tr:nth-child(3) td:first-child {
+    color: #cd7f32;
+    font-size: 18px;
+}
+tbody tr:nth-child(n+4) td:first-child {
+    color: #ffffff;
+    font-size: 16px;
+}
+
+#historicoTable th:nth-child(1),
+#historicoTable td:nth-child(1) {
+    width: 60px;
+}
+
+#historicoTable th:nth-child(2),
+#historicoTable td:nth-child(2) {
+    width: 280px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#historicoTable th:nth-child(3),
+#historicoTable td:nth-child(3) {
+    width: 120px;
+    color: #1db954;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#historicoTable th:nth-child(4),
+#historicoTable td:nth-child(4) {
+    width: 150px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+td:nth-child(2) > .flex-name-img {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flex-name-img img {
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+}
+
+.flex-name-img a {
+    color: #4ab3ff;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.flex-name-img a:hover {
+    text-decoration: underline;
+    color: #ffcc00;
+}
+
+.guild-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(65, 75, 103, 0.6);
+    border-radius: 10px;
+    padding: 10px 30px;
+    margin-bottom: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.guild-header img {
+    height: 80px;
+    width: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    margin-right: 10px;
+}
+
+.guild-header h1 {
+    margin: 0;
+    font-size: 28px;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.guild-rank {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffcc00;
+    text-align: right;
+    min-width: 100px;
+}
+
+.guild-left img {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: contain;
+    display: block;
+}
+
+.flex-name-img {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    table {
+        font-size: 14px;
+        table-layout: auto;
+    }
+
+    td:nth-child(2) {
+        white-space: normal;
+    }
+
+    td:nth-child(2) > .flex-name-img {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .flex-name-img img {
+        height: 60px;
+        width: 60px;
+        margin-bottom: 5px;
+    }
+
+    .flex-name-img a {
+        font-size: 14px;
+        word-break: break-word;
+        white-space: normal;
+        display: block;
+        max-width: 100px;
+        text-align: center;
+    }
+
+    .guild-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .guild-header h1 {
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .guild-rank {
+        font-size: 20px;
+    }
+
+    .botones-exportar {
+        margin-bottom: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .botones-exportar button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        background-color: #2196f3;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .botones-exportar button:hover {
+        background-color: #1976d2;
+    }
+}

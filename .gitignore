@@ -1,0 +1,22 @@
+# Ignorar la carpeta node_modules
+node_modules/
+
+# Ignorar logs
+*.log
+
+# Ignorar archivos temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar entorno local (por si usas dotenv en el futuro)
+.env
+
+# Ignorar datos temporales o de respaldo
+*.tmp
+*.bak
+
+# Ignorar toda la carpeta 'data'...
+data/
+
+# ...excepto los archivos .json dentro de 'data'
+!data/*.json
