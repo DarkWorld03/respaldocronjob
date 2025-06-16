@@ -2,7 +2,14 @@ const puppeteer = require("puppeteer");
 
 async function scrapeGuildData() {
     try {
-        const browser = await puppeteer.launch({ headless: true });
+        const isRender = process.env.RENDER ? true : false;
+
+const browser = await puppeteer.launch({
+  headless: true,
+  executablePath: isRender ? '/usr/bin/google-chrome-stable' : undefined,
+  args: isRender ? ['--no-sandbox', '--disable-setuid-sandbox'] : []
+});
+
         const page = await browser.newPage();
 
         // ✅ Bloquear recursos innecesarios para acelerar
