@@ -1,8 +1,31 @@
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const scrapeGuildData = require("./scraperGuild");
+const axios = require("axios");
+const FormData = require("form-data");
+
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const CHAT_ID = process.env.CHAT_ID;
+
+async function enviarArchivoTelegram(filePath) {
+  const form = new FormData();
+  form.append("chat_id", CHAT_ID);
+  form.append("document", fs.createReadStream(filePath));
+
+  try {
+    const res = await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, form, {
+      headers: form.getHeaders(),
+    });
+    console.log("✅ Archivo enviado por Telegram correctamente.");
+  } catch (err) {
+    console.error("❌ Error enviando archivo por Telegram:", err.message);
+  }
+}
 
 async function guardarDatosDiarios() {
+  console.log("🔄 Ejecutando guardarDatosDiarios...");
+
   const data = await scrapeGuildData();
 
   if (!data || !data.players || data.players.length === 0) {
@@ -17,110 +40,52 @@ async function guardarDatosDiarios() {
   const dd = String(today.getDate()).padStart(2, "0");
   const fecha = `${yyyy}-${mm}-${dd}`;
 
-  const folderPath = path.join(__dirname, "data");
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath);
-  }
-
-  const filePath = path.join(folderPath, `${fecha}.json`);
-
-  // Obtener todos los archivos JSON en data y ordenarlos de más reciente a más antiguo
-  const archivos = fs.readdirSync(folderPath).filter(f => f.endsWith(".json")).sort((a, b) => b.localeCompare(a));
-
-  // Función para extraer jugadores con id y puntos numéricos desde un objeto data
-  const formatearJugadores = (players) => players.map(jugador => ({
+  // Formatear jugadores
+  const players = data.players.map(jugador => ({
     id: jugador.id,
     name: jugador.name,
     points: Number(jugador.points.toString().replace(/[^0-9]/g, "")) || 0,
   }));
 
-  const jugadoresHoy = formatearJugadores(data.players);
+  const mensaje = {
+    date: fecha,
+    players
+  };
 
-  // 1. Si todos tienen 0 puntos hoy, no guardar
-  const todosCero = jugadoresHoy.every(j => j.points === 0);
-  if (todosCero) {
-    console.log("⚠️ Todos los jugadores tienen 0 puntos. No se guardó archivo.");
+  // Crear carpeta data si no existe
+  const folderPath = path.join(__dirname, "data");
+  if (!fs.existsSync(folderPath)) {
+    console.log("📂 Carpeta 'data' no existe, creando...");
+    try {
+      fs.mkdirSync(folderPath);
+      console.log("✅ Carpeta 'data' creada.");
+    } catch (err) {
+      console.error("❌ Error creando carpeta 'data':", err.message);
+      return;
+    }
+  }
+
+  // Guardar archivo JSON
+  const filePath = path.join(folderPath, `${fecha}.json`);
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(mensaje, null, 2));
+    console.log(`✅ Archivo guardado correctamente: ${filePath}`);
+  } catch (err) {
+    console.error("❌ Error guardando archivo JSON:", err.message);
     return;
   }
 
-  // Leer archivo base fijo (opcional)
-  const archivoBaseNombre = "2025-06-14.json"; // si quieres quitar esta comparación, comenta las líneas que la usan
-  const filePathBase = path.join(folderPath, archivoBaseNombre);
-  let jugadoresBase = null;
-
-  if (fs.existsSync(filePathBase)) {
-    try {
-      const rawBase = fs.readFileSync(filePathBase, "utf-8");
-      const datosBase = JSON.parse(rawBase);
-      jugadoresBase = formatearJugadores(datosBase.players);
-    } catch (err) {
-      console.warn("⚠️ Error leyendo archivo base:", err.message);
-    }
-  }
-
-  // Leer el archivo más reciente, si existe
-  let jugadoresUltimoArchivo = null;
-  if (archivos.length > 0) {
-    try {
-      const rawUltimo = fs.readFileSync(path.join(folderPath, archivos[0]), "utf-8");
-      const datosUltimo = JSON.parse(rawUltimo);
-      jugadoresUltimoArchivo = formatearJugadores(datosUltimo.players);
-    } catch (err) {
-      console.warn("⚠️ Error leyendo último archivo:", err.message);
-    }
-  }
-
-  // Función para comparar arrays de jugadores (solo jugadores comunes)
-  const jugadoresComunesEntre = (base, nuevo) => {
-    const dictBase = {};
-    base.forEach(j => { dictBase[j.id] = j.points; });
-
-    return nuevo.filter(j => dictBase.hasOwnProperty(j.id));
-  };
-
-  const todosIguales = (base, nuevo) => {
-    const dictBase = {};
-    base.forEach(j => { dictBase[j.id] = j.points; });
-
-    return nuevo.every(j => dictBase[j.id] === j.points);
-  };
-
-  // Comparar con archivo base fijo (si existe)
-  if (jugadoresBase) {
-    const comunesBase = jugadoresComunesEntre(jugadoresBase, jugadoresHoy);
-    if (comunesBase.length === 0) {
-      console.log("⚠️ No hay jugadores en común con el archivo base. No se guardó archivo.");
-      return;
-    }
-    if (todosIguales(jugadoresBase, comunesBase)) {
-      console.log("ℹ️ Los puntos son iguales al archivo base, temporada no ha comenzado. No se guardó archivo.");
-      return;
-    }
-  }
-
-  // Comparar con último archivo guardado (si existe)
-  if (jugadoresUltimoArchivo) {
-    const comunesUltimo = jugadoresComunesEntre(jugadoresUltimoArchivo, jugadoresHoy);
-    if (comunesUltimo.length === 0) {
-      console.log("⚠️ No hay jugadores en común con el último archivo guardado. No se guardó archivo.");
-      return;
-    }
-    if (todosIguales(jugadoresUltimoArchivo, comunesUltimo)) {
-      console.log("ℹ️ Los puntos son iguales al último archivo guardado. No se guardó archivo.");
-      return;
-    }
-  }
-
-  // Guardar archivo
-  guardarArchivo(filePath, fecha, jugadoresHoy);
+  // Enviar archivo JSON por Telegram
+  await enviarArchivoTelegram(filePath);
 }
 
-function guardarArchivo(ruta, fecha, jugadores) {
-  fs.writeFileSync(
-    ruta,
-    JSON.stringify({ date: fecha, players: jugadores }, null, 2)
-  );
-  console.log(`✅ Datos guardados correctamente: ${ruta}`);
+// Ejecutar la función si se corre este archivo directamente
+if (require.main === module) {
+  guardarDatosDiarios().then(() => {
+    console.log("🔚 Ejecución finalizada.");
+  }).catch(err => {
+    console.error("❌ Error inesperado:", err);
+  });
 }
 
 module.exports = guardarDatosDiarios;
