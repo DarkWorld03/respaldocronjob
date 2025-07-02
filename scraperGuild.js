@@ -1,5 +1,8 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const fs = require("fs");
+
+puppeteer.use(StealthPlugin());
 
 async function scrapeGuildData() {
   try {
@@ -10,7 +13,17 @@ async function scrapeGuildData() {
 
     const page = await browser.newPage();
 
-    // Bloquear recursos no esenciales
+    // Establecer un user-agent realista
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+    );
+
+    // Cabeceras adicionales típicas
+    await page.setExtraHTTPHeaders({
+      "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+    });
+
+    // Bloquear recursos innecesarios
     await page.setRequestInterception(true);
     page.on("request", (req) => {
       const type = req.resourceType();
@@ -27,7 +40,6 @@ async function scrapeGuildData() {
     });
 
     try {
-      // Ampliamos los timeouts y añadimos control de error
       await page.waitForSelector('a[href^="/profile/"]', { timeout: 60000 });
       await page.waitForSelector("span.text-base.font-semibold", { timeout: 60000 });
     } catch (err) {
@@ -37,7 +49,6 @@ async function scrapeGuildData() {
       throw err;
     }
 
-    // Tiempo adicional de espera por si la página carga lento
     await new Promise((resolve) => setTimeout(resolve, 4000));
 
     const guildData = await page.evaluate(() => {
@@ -66,5 +77,3 @@ async function scrapeGuildData() {
 }
 
 module.exports = scrapeGuildData;
-
-
